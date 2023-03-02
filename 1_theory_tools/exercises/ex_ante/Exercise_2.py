@@ -15,11 +15,11 @@ def solve_VFI(par):
         it = it+1
         V_next = V_now.copy()
         for w in range(par.W+1):
-            #Fill in
-            
-            
-            
-            
+            c = np.arange(w+1) #+1 fordi den tæller op til værdien lige inden. Hvis der stod arange(5) ville det være 0-4 
+            w_c = w - c
+            V_guess = np.sqrt(c)+par.beta*V_next[w_c]
+            V_now[w] = np.amax(V_guess)
+            Cstar[w] = np.argmax(V_guess)
         delta = np.amax(np.abs(V_now - V_next))
     
     class sol: pass
