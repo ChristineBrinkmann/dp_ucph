@@ -59,7 +59,7 @@ class zurcher():
         '''Evaluate Bellman operator, choice probability and Frechet derivative - written in integrated value form'''
 
         # Value of options:
-        value_keep = -self.cost + self.beta * self.P1 @ ev0 # nx1 matrix
+        value_keep = -self.cost + self.beta * self.P1 @ ev0 # nx1 matrix               exp utility + beta*transition-matrix*v0 
         value_replace = -self.RC - self.cost[0] + self.beta * self.P2 @ ev0   # 1x1
 
         # recenter Bellman by subtracting max(VK, VR)
@@ -139,11 +139,11 @@ class zurcher():
         np.random.seed(2020)
         
         # Index 
-        idx = np.tile(np.arange(1,N+1),(T,1))  
-        t = np.tile(np.arange(1,T+1),(N,1)).T
+        idx = np.tile(np.arange(1,N+1),(T,1)) #interval fra 1-N+1, tile den ovenpå hinanden T gange 
+        t = np.tile(np.arange(1,T+1),(N,1)).T  #interval fra 1-T+1, tile den ovenpå hinanden N gange og transponér
         
         # Draw random numbers
-        u_init = np.random.randint(self.n,size=(1,N)) # initial condition
+        u_init = np.random.randint(self.n,size=(1,N)) # initial condition    
         u_dx = np.random.rand(T,N) # mileage
         u_d = np.random.rand(T,N) # choice
         
