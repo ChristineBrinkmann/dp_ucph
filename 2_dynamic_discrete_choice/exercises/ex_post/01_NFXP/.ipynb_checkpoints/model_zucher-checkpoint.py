@@ -160,7 +160,7 @@ class zurcher():
         d = np.nan + np.zeros((T,N))
         x[0,:] = u_init # initial condition
         for it in range(T):
-            d[it,:] = u_d[it,:]<1-pk[x[it,:]]  # replace = 1 , keep = 0   pk: choice probability 
+            d[it,:] = u_d[it,:]<1-pk[x[it,:]]  # replace = 1 , keep = 0   pk: choice probability
             x1[it,:] = np.minimum(x[it,:]*(1-d[it,:]) + dx1[it,:] , self.n-1) # State transition, minimum to avoid exceeding the maximum mileage
             if it < T-1:
                 x[it+1,:] = x1[it,:]

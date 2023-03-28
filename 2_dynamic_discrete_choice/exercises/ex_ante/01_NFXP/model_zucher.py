@@ -143,22 +143,27 @@ class zurcher():
         t = np.tile(np.arange(1,T+1),(N,1)).T  #interval fra 1-T+1, tile den ovenpå hinanden N gange og transponér
         
         # Draw random numbers
-        u_init = np.random.randint(self.n,size=(1,N)) # initial condition    
+        u_init = np.random.randint(self.n,size=(1,N)) # initial condition
+        # (selects random intergers from 0-174 og stacker dem ovenpå hinanden N gange)
         u_dx = np.random.rand(T,N) # mileage
+        # det er en ssh for hvor meget vi har kørt
+        # random.rand gives random numbers [0,1) in (T,N)-shape
         u_d = np.random.rand(T,N) # choice
         
         # Find states and choices
-        csum_p = np.cumsum(self.p)
+        csum_p = np.cumsum(self.p) #self.p = transition probability
         dx1 = 0
         for val in csum_p:
-            dx1 += u_dx>val
+            dx1 += u_dx>val #Denne returnerer fra 0-4. Hvis u_dx > val så får vi 1. Hvis næste skridt også er u_dx > val så får vi 1+1.
         
         x = np.zeros((T,N),dtype=int)
         x1 =  np.zeros((T,N),dtype=int)
         d = np.nan + np.zeros((T,N))
         x[0,:] = u_init # initial condition
         for it in range(T):
-            d[it,:] = u_d[it,:]<1-pk[x[it,:]]  # replace = 1 , keep = 0   
+            d[it,:] = u_d[it,:]<1-pk[x[it,:]]  # replace = 1 , keep = 0   pk: choice probability
+            #hvis det random choice < 1-pk så får vi 0? eller 1?
+            #hvorfor er det lige vi gør det her? og hvorfor er det 1-pk og ikke bare pk?
             x1[it,:] = np.minimum(x[it,:]*(1-d[it,:]) + dx1[it,:] , self.n-1) # State transition, minimum to avoid exceeding the maximum mileage
             if it < T-1:
                 x[it+1,:] = x1[it,:]
