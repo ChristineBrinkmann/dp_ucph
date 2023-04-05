@@ -75,8 +75,8 @@ def ll(theta,model,data,pnames,out=1):
     # Unpack
     x = data.x
     xd = data.xd
-    dk = data.dk
-    dr = data.dr
+    dk = data.dk 
+    dr = data.dr 
     # Update values
     model.RC = theta[0]
     model.c = theta[1] 

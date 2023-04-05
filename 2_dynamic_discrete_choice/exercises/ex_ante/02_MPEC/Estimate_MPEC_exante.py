@@ -94,8 +94,8 @@ def ll(theta,model,data,pnames,out=1):
     # Unpack
     x = data.x
     xd = data.xd
-    dk = data.dk
-    dr = data.dr
+    dk = data.dk #keep
+    dr = data.dr #replace
     
     # Update values
     model.RC = theta[0]
@@ -110,11 +110,12 @@ def ll(theta,model,data,pnames,out=1):
 
     #Hint: We are now solving in expected value function space. This means that unlike in exercise_1, 
     # you should not multiply ev with the transition matrix.
-    #v_keep = # Value of keep
-    #v_replace = # Value of replace
+    #tager udgangspunkt i model.zurcher.py
+    v_keep = -model.cost + model.beta*ev
+    v_replace = -model.RC - model.cost[0] + model.beta*ev[0]
     
     # Choice probabiltiy of keep for all states
-    #pk = 
+    pk = 1/(1+np.exp(v_replace-v_keep))
 
     # Choice probability of keep given observed state in data
     lik_pr =  pk[data.x] 
@@ -123,7 +124,7 @@ def ll(theta,model,data,pnames,out=1):
         return model, lik_pr
 
     # Evaluate log-likelihood
-    # log_lik = 
+    log_lik = np.log(dk*lik_pr+(1-lik_pr)*dr)
 
     # Objective function is negative mean log-likelihood
     f = -np.mean(log_lik)
