@@ -80,6 +80,7 @@ class zurcher():
         #Calculate [I-Fu]^{-1} if not given
         if Finv is None:
             self.unc_state_transition(pk)
+        print(self.Fu)
         
         # Euler constant
         eulerc = np.euler_gamma
