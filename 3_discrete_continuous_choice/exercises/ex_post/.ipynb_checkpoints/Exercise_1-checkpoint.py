@@ -22,7 +22,7 @@ def setup():
     par.T = 10
     
     # Gauss Hermite weights and poins
-    par.num_shocks = 5 #number of quadrature nodes
+    par.num_shocks = 5
     x,w = gauss_hermite(par.num_shocks)
     par.eps = np.exp(par.sigma*np.sqrt(2)*x)
     par.eps_w = w/np.sqrt(np.pi)
@@ -41,7 +41,7 @@ def setup():
     return par
 
 def solve_ti(par):
-    # initialize solution class
+     # initialize solution class
     class sol: pass
     sol.C = np.zeros(par.dim)
     
@@ -74,8 +74,7 @@ def solve_ti(par):
 def euler_error_func(c,t,par,sol):
     
     #Find next period's assets
-    m_next = par.R*(par.grid_M - c)[:,np.newaxis] + par.eps[np.newaxis,:] #Fill in. Hint: create a matrix with state grid points as rows and add the different shocks as columns
-    # Vi tilføjer den ekstra akse simpelthen fordi de har nuldimensionen (X.) og derfor ikke kan broadcastes sammen
+    m_next = par.R*(par.grid_M - c)[:,np.newaxis] + par.eps[np.newaxis,:] # creating a matrix with state grid points as rows and different shocks as columns
 
     #Interpolate next period's consumption
     interp = interpolate.interp1d(par.grid_M,sol.C[:,t+1], bounds_error=False, fill_value = "extrapolate") 
@@ -88,7 +87,7 @@ def euler_error_func(c,t,par,sol):
     U_now = marg_util(c,par) 
 
     # Calculate Euler error
-    euler_error = U_now - par.beta*par.R*EU_next # fill in the Euler error
+    euler_error = U_now-par.beta*par.R*EU_next
 
     return euler_error
 

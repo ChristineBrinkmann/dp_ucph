@@ -26,7 +26,7 @@ def setup():
     par.T = 10
     
     # Gauss Hermite weights and points
-    par.num_shocks = 5 # Number of quadrature nodes
+    par.num_shocks = 5
     x,w = gauss_hermite(par.num_shocks)
     par.eps = np.exp(par.sigma*np.sqrt(2)*x)
     par.eps_w = w/np.sqrt(np.pi)
@@ -48,21 +48,15 @@ def setup():
 def EGM_loop (sol,t,par):
     interp = interpolate.interp1d(sol.M[:,t+1],sol.C[:,t+1], bounds_error=False, fill_value = "extrapolate")  # Interpolation function
     for i_a,a in enumerate(par.grid_a): # Loop over end-of-period assets
+        # Future m and c
+        m_next = par.R * a + par.eps
+        c_next = interp(m_next)
         
-        # Fill in
-        # Hint: Use the EGM step (see Bertel's slides)
-        # 1. Find m_next
-        m_next = par.R*a + par.eps
-        # 2. Find c_next using interpolation of next period solution
-        c_next = interp(m_next) 
-        #Vi giver den et nyt grid (x / m_next) som den skal interpolere på. Vi ved at M = c_now + a 
-        
-        # 3. Find expected marginal utility of next period consumption
-        EU_next = np.sum(par.eps_w[np.newaxis,:]*marg_util(c_next,par), axis=1)
-        # Se 00_01_slides_time_iteration.ipynb
-        # 4. Find optimal consumption using inverted Euler
-        c_now = inv_marg_util(par.beta*par.R*EU_next, par)
-        # 5. Find endogenous cash on hand (m)
+        # Future expected marginal utility
+        EU_next = np.sum(par.eps_w*marg_util(c_next,par))
+
+        # Current consumption
+        c_now = inv_marg_util(par.R * par.beta * EU_next, par)
         
         # Index 0 is used for the corner solution, so start at index 1
         sol.C[i_a+1,t]= c_now
@@ -73,20 +67,20 @@ def EGM_loop (sol,t,par):
 def EGM_vectorized (sol,t,par):
 
     interp = interpolate.interp1d(sol.M[:,t+1],sol.C[:,t+1], bounds_error=False, fill_value = "extrapolate") # Interpolation function
-
-    # Fill in
-    # Hint: Look at the exercise_2.EGM_loop function and follow the EGM step procedure
-    #       Look at the exercise_1.euler_error_func function and follow the vectorization syntax
-    m_next = par.R*par.grid_a[:,np.newaxis] + par.eps[np.newaxis,:]
+    
+    # Future m and c
+    m_next = par.R*par.grid_a[:,np.newaxis] + par.eps[np.newaxis,:] # Next period assets  
     c_next = interp(m_next)
     
-    EU_next = np.sum(par.eps_w[np.newaxis,:]*marg_util(c_next,par), axis=1)
-
-    c_now = inv_marg_util(par.beta*par.R*EU_next, par)
+    # Future expected marginal utility
+    EU_next = np.sum(par.eps_w[np.newaxis,:] * marg_util(c_next,par),axis=1)
+    
+    # Current consumption
+    c_now = inv_marg_util(par.beta * par.R * EU_next,par)
     
     # Index 0 is used for the corner solution, so start at index 1
-    sol.C[1:,t]= c_now
-    sol.M[1:,t]= c_now + par.grid_a
+    sol.C[1:,t] = c_now
+    sol.M[1:,t] = c_now + par.grid_a
     return sol
 
 
