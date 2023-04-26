@@ -90,6 +90,7 @@ class model_bufferstock():
         ## Nodes and weights for quadrature
         ### Define epsilon
         eps,eps_w = tools.GaussHermite_lognorm(par.sigma_xi,par.Neps)
+        
         ###Define psi
         par.psi,par.psi_w = tools.GaussHermite_lognorm(par.sigma_psi,par.Npsi)
 
@@ -101,6 +102,7 @@ class model_bufferstock():
         else: #If no discrete shock then xi=eps
             par.xi = eps
             par.xi_w = eps_w
+            #par.xi ender med at være 9 lang
 
         # Vectorize all
         ## Repeat and tile are used to create all combinations of shocks (like a tensor product)

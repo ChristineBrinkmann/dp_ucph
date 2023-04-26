@@ -106,12 +106,15 @@ class model_bufferstock():
         # Vectorize all
         ## Repeat and tile are used to create all combinations of shocks (like a tensor product)
         par.xi_vec = np.tile(par.xi,par.psi.size)       # Repeat entire array x times
+        #print((par.xi_vec).shape, "par.xi_vec")
         par.psi_vec = np.repeat(par.psi,par.xi.size)    # Repeat each element of the array x times
         par.xi_w_vec = np.tile(par.xi_w,par.psi.size)
         par.psi_w_vec = np.repeat(par.psi_w,par.xi.size)
 
         # Weights for each combination of shocks
         par.w = par.xi_w_vec * par.psi_w_vec
+        print(par.w)
+        print((par.w).shape, "par.w")
         assert (1-sum(par.w) < 1e-8), 'the weights does not sum to 1'
         par.Nshocks = par.w.size    # count number of shock nodes
         

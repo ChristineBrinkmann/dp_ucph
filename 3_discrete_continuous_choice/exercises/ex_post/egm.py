@@ -32,6 +32,7 @@ def EGM_loop (sol,t,par):
         # Future expected marginal utility
         marg_u_plus = util.marg_util(fac*c_plus,par)
         avg_marg_u_plus = np.sum(w*marg_u_plus)
+        #print(avg_marg_u_plus, "avg_marg_u_plus")
 
         # Current c and m (i_a+1 as we save the first index point to handle the credit constraint region)
         sol.c[t,i_a+1]=util.inv_marg_util(par.beta*par.R*avg_marg_u_plus,par)
